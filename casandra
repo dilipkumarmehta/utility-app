@@ -6,6 +6,7 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 public class CURDDemo {
 	public static void main(String[] args) {
+//https://www.mongodbmanager.com/download
 //F:\apache-cassandra-3.11.1-bin\apache-cassandra-3.11.1\bin>cqlsh.py
 //http://www.devjavasource.com/cassandra/apache-cassandra-quick-start/
 //https://venkatjavasource.wordpress.com/2015/06/23/cassandra-crud-operation-using-java/
