@@ -1,0 +1,17 @@
+public void archiveResumesForExtraction() {
+		try {
+	      FileUtils.copyFileToDirectory(new File("F:\\microservice\\test\\casandra-demo.zip"), new File("F:\\microservice\\arch"));
+	      FileUtils.forceDeleteOnExit(new File("F:\\microservice\\test\\casandra-demo.zip"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+  
+  <dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>1.3.2</version>
+		</dependency>
+
+  
+  
