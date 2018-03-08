@@ -1,7 +1,9 @@
 public void archiveResumesForExtraction() {
 		try {
-	      FileUtils.copyFileToDirectory(new File("F:\\microservice\\test\\casandra-demo.zip"), new File("F:\\microservice\\arch"));
-	      FileUtils.forceDeleteOnExit(new File("F:\\microservice\\test\\casandra-demo.zip"));
+			FileUtils.copyFileToDirectory(new File("F:\\microservice\\test\\casandra-demo.zip"),
+					new File("F:\\microservice\\arch"));
+			FileUtils.forceDeleteOnExit(new File("F:\\microservice\\test\\casandra-demo.zip"));
+			FileUtils.deleteDirectory(new File("F:\\microservice\\tt"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
