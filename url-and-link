@@ -3,3 +3,6 @@ https://docs.spring.io/spring-boot/docs/ => Check the Vesion of spring boot , we
 https://randoop.github.io/randoop/---toolo for aautomatic unitest generation
 
 http://www.eclipse.org/downloads/packages/release/juno/sr2
+
+spring boot migration url guidlines:
+https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Migration-Guide
