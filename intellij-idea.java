@@ -7,3 +7,4 @@
 5. GsonFormat
 2. rainbow Brackets
 4. Theme- one Dark vivid 
+5. SonarLint 
