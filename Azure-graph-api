@@ -1,0 +1,74 @@
+
+https://developer.microsoft.com/en-us/graph/graph-explorer
+
+Token End Point: (accessToken)P{
+https://login.microsoftonline.com/{tenant Id}/oauth2/v2.0/token
+grant_type: client_credentials.
+client_id: get from azure application
+client_secret: get from azure application
+scope: https://graph.microsoft.com/.default
+
+
+Note:
+https://www.youtube.com/watch?v=pgNMjc034j0&t=20s
+https://learn.microsoft.com/en-us/entra/identity-platform/scenario-web-app-sign-user-app-configuration?tabs=aspnetcore (msal exmaple)
+A redirect URI is the location where the Microsoft identity platform redirects a user's client and sends security tokens after authentication.
+
+
+ID Token:(https://learn.microsoft.com/en-us/azure/databricks/dev-tools/app-aad-token)
+it has some token and username ,email ..etc.The authorization server issues ID tokens that contain claims that carry information about the user.
+Third-party applications are intended to understand ID tokens. ID tokens shouldn't be used for authorization purposes. Access tokens are used for authorization
+https://login.microsoftonline.com/common/oauth2/v2.0/authorize [url for ID token]
+
+https://login.microsoftonline.com/<tenant-id>/oauth2/v2.0/authorize?client_id=<client-id>
+&response_type=code
+&redirect_uri=<redirect-uri>
+&response_mode=query
+&scope=2ff814a6-3304-4ab8-85cb-cd0e6f879c1d%2F.default
+&state=<state>
+
+
+AccessToken:
+Access tokens enable clients to securely call protected web APIs. Web APIs use access tokens to perform authentication and authorization.
+https://login.microsoftonline.com/{example-tenant-id}/.well-known/openid-configuration
+
+curl -X POST -H 'Content-Type: application/x-www-form-urlencoded' \
+https://login.microsoftonline.com/<tenant-id>/oauth2/v2.0/token \
+-d 'client_id=<client-id>' \
+-d 'scope=2ff814a6-3304-4ab8-85cb-cd0e6f879c1d%2F.default' \
+-d 'code=<authorization-code>' \
+-d 'redirect_uri=<redirect-uri>' \
+-d 'grant_type=authorization_code' \
+-d 'state=<state>'
+
+
+For example, if your application's domain is https://example.com, your OAuth callback URL might be something like https://example.com/oauth/callback.
+
+GraphApiCall: Bearer value is accessToken
+GET https://graph.microsoft.com/v1.0/me  HTTP/1.1
+Authorization: Bearer eyJ0eXAiO ... 0X2tnSQLEANnSPHY0gKcgw
+Host: graph.microsoft.com
+
+
+private String getUserInfoFromGraph(String accessToken) throws Exception {
+    // Microsoft Graph user endpoint
+    URL url = new URL("https://graph.microsoft.com/v1.0/me");
+
+    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+    // Set the appropriate header fields in the request header.
+    conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+    conn.setRequestProperty("Accept", "application/json");
+
+    String response = HttpClientHelper.getResponseStringFromConn(conn);
+
+    int responseCode = conn.getResponseCode();
+    if(responseCode != HttpURLConnection.HTTP_OK) {
+        throw new IOException(response);
+    }
+
+    JSONObject responseObject = HttpClientHelper.processResponse(responseCode, response);
+    return responseObject.toString();
+}
+
+

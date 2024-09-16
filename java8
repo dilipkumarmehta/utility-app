@@ -1,0 +1,4 @@
+Predicate<Integer> p=x->x.equals("ss");
+Function<Integer,Integer> intg=x->x+2;
+Consumer<Integer> con=x->System.out.println(x);
+Supplier<Integer> sup = () -> UUID.randomUUID().hashCode();

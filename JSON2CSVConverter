@@ -1,0 +1,112 @@
+package Json2CsvConverter;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+public class JsonParseTest {
+/*
+ * Sample json Format EXAMPLE 
+ * 
+ * { "name"[{"na":"ddf","dfsa":"dsf"]}
+ * 
+ */
+	private static final String FILE_HEADER = "Application,BasePath,Name,Revision";
+	private static final String filePath = "C:\\D-Drive\\note++\\json3.json";
+	private static final String NEW_LINE_SEPARATOR = "\n";
+	private static final String COMMA_DELIMITER = ",";
+
+	public static void main(String[] args) throws ParseException {
+		JSONParser jsonParser = new JSONParser();
+		jsonReader();
+		try {
+			FileReader reader = new FileReader(filePath);
+			JSONObject jsonObject = (JSONObject) jsonParser.parse(reader);
+			JSONArray lang = (JSONArray) jsonObject.get("elements");
+			Iterator i = lang.iterator();
+			List<Proxy> proxy = new ArrayList();
+			while (i.hasNext()) {
+				JSONObject innerObj = (JSONObject) i.next();
+				String application = (String) innerObj.get("application");
+				String basePath = (String) innerObj.get("basePath");
+				String name = (String) innerObj.get("name");
+				String revision = (String) innerObj.get("revision");
+				Proxy proxy1 = new Proxy(application, basePath, name, revision);
+				proxy.add(proxy1);
+			}
+			CsvWriter(proxy);
+
+		} catch (FileNotFoundException ex) {
+			ex.printStackTrace();
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+
+	}
+
+	public static void CsvWriter(List<Proxy> proxyList) {
+		FileWriter fileWriter = null;
+		final String filePath = "C:\\D-Drive\\note++\\prxy3.csv";
+		try {
+			fileWriter = new FileWriter(filePath);
+			fileWriter.append(FILE_HEADER.toString());
+			fileWriter.append(NEW_LINE_SEPARATOR);
+			for (Proxy prxy : proxyList) {
+				fileWriter.append(prxy.getApplication());
+				fileWriter.append(COMMA_DELIMITER);
+				fileWriter.append(prxy.getBasePath());
+				fileWriter.append(COMMA_DELIMITER);
+				fileWriter.append(prxy.getName());
+				fileWriter.append(COMMA_DELIMITER);
+				fileWriter.append(prxy.getRevision());
+				fileWriter.append(COMMA_DELIMITER);
+				fileWriter.append(NEW_LINE_SEPARATOR);
+
+			}
+			System.out.println("CSV file was created successfully !!!");
+
+		} catch (Exception e) {
+			System.out.println("Error in CsvFileWriter !!!");
+			e.printStackTrace();
+		} finally {
+			try {
+				fileWriter.flush();
+				fileWriter.close();
+			} catch (IOException e) {
+				System.out.println("Error while flushing/closing fileWriter !!!");
+				e.printStackTrace();
+			}
+
+		}
+
+	}
+
+	public static void jsonReader() {
+		final String filePath = "C:\\D-Drive\\note++\\json.json";
+		JSONParser jsonParser = new JSONParser();
+		JSONObject jsonObject;
+
+		try {
+			FileReader reader = new FileReader(filePath);
+			Object obj = new JSONParser().parse(new FileReader(filePath));
+			JSONArray arr = (JSONArray) obj;
+			for (Object object : arr) {
+				jsonObject = (JSONObject) jsonParser.parse(object.toString());
+				System.out.println(jsonObject);
+			}
+
+		} catch (Exception e) {
+
+		}
+	}
+
+}
