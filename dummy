@@ -1,0 +1,9 @@
+  List<Employee> uniqueEmployees = employees.stream()
+                    .collect(Collectors.groupingBy(Employee::getEmployeeId))
+                    .values().stream()
+                    .map(empList -> empList.stream()
+                            .filter(e -> e.getStatus().equals("release"))
+                            .findFirst()  // If "release" exists, use it
+                            .orElse(empList.get(0)) // Otherwise, keep the first employee
+                    )
+                    .collect(Collectors.toList());
