@@ -1,0 +1,17 @@
+public static <T extends Number,V extends Number> T show(T first,V second){
+           return first;
+    }
+
+    public static void print(List<?> list){
+        System.out.println(list);
+
+    }
+    public static void printBoundType(List<? extends Number> list){
+        list.stream().
+        System.out.println(list);
+        int i = UUID.randomUUID().hashCode();
+    }
+interface Generic<T,R>{
+    R apply(T t);
+    R apply(T t,R r);
+}

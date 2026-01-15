@@ -1,0 +1,85 @@
+package com.tmobile.bill.recon.scheduler;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
+
+import com.tmobile.bill.recon.service.BillReconService;
+
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+
+@Configuration
+@Component
+public class BillReconUnzipUtil2 {
+	// C Drive FTP location
+	private static Logger logger = LoggerFactory.getLogger(BillReconUnzipUtil.class);
+
+	@Autowired
+	BillReconService billReconServicel;
+
+	String ftpLocation = "C:\\FTP-Location";
+	String workingPath = "C:\\WorkingFolder";
+	private static String reconciled = "C:\\WorkingFolder\\reconciled";
+
+	public void unzipFileProcess() {
+		File file = new File(ftpLocation);
+		File files[] = file.listFiles();
+		if (files.length > 0) {
+			for (File fileIndex : files) {
+				logger.info("Zip file name", fileIndex.getName());
+				String workingFileName = getWorkingLocation(fileIndex.getAbsolutePath());
+				try {
+					String cycleDateFolder = workingPath + File.separator + workingFileName;
+					ZipFile zipFile = new ZipFile(fileIndex.getAbsolutePath());
+					zipFile.extractAll(cycleDateFolder);
+					logger.info("cycle date - folder Name " + workingFileName);
+					// start processing
+					// billReconServicel.reconCount(cycleEndDate)
+					// start deleting folder
+					File procesFile = new File(cycleDateFolder);
+					String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(new Date());
+					File reNmae = new File(procesFile + timeStamp);
+					procesFile.renameTo(reNmae);
+					if (reNmae.exists()) {
+						FileUtils.copyDirectoryToDirectory(reNmae, new File(reconciled));
+						FileUtils.deleteDirectory(reNmae);
+					}
+					File zipfile = new File(fileIndex.getAbsolutePath());
+					if (fileIndex.exists()) {
+						FileUtils.copyFileToDirectory(zipfile, new File(reconciled));
+						FileUtils.forceDelete(zipfile);
+					}
+
+				} catch (ZipException | IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+		} else {
+			System.out.println("there is no Zip File");
+		}
+	}
+
+	public String getWorkingLocation(String absalutePath) {
+		String[] fileName = absalutePath.split("_");
+		String FileNameDest = fileName[2].substring(0, 8);
+		String reportDestLocation = FileNameDest.substring(4) + "-" + FileNameDest.substring(0, 2) + "-"
+				+ FileNameDest.substring(2, 4);
+		return reportDestLocation;
+	}
+
+	public static void main(String[] args) throws FileNotFoundException {
+		new BillReconUnzipUtil2().unzipFileProcess();
+	}
+
+}
